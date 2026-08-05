@@ -275,7 +275,7 @@
           </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="secYears">
         <label class="field-label">Thời gian đăng ký</label>
         <div class="option-grid">
           <label class="radio-card active"><input type="radio" name="years" value="12" onchange="syncOpt1AndCalculate()" checked><span class="checkmark"></span> 1 Năm (12 tháng)</label>
@@ -335,7 +335,7 @@
           </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" id="comp_secYears">
         <label class="field-label">Thời gian đăng ký</label>
         <div class="option-grid">
           <label class="radio-card"><input type="radio" name="comp_years" value="12" onchange="syncOpt2AndCalculate()"><span class="checkmark"></span> 1 Năm (12 tháng)</label>
@@ -1052,6 +1052,9 @@
     const yrs = parseInt(yearsEl.value);
 
     const promoCard = document.getElementById('dynamicPromoCard');
+    const isCombo = packageEl.getAttribute('data-iscombo') === '1';
+    const secYears = document.getElementById('secYears');
+    if (secYears) secYears.style.display = isCombo ? 'none' : 'block';
     const bonusArea = document.getElementById('bonusOptionsArea');
     const giftArea = document.getElementById('giftOptionsArea');
     const secInitFee = document.getElementById('secInitFee');
@@ -1084,7 +1087,18 @@
 
     let hasPromo = false;
 
-    if (yrs === 12) {
+    if (isCombo) {
+      hasPromo = true; giftQuota = 1;
+      secDiscount.style.display = 'block'; secBonus.style.display = 'block'; secGift.style.display = 'block';
+      bonusArea.innerHTML = buildBonusHTML([0, 6, 12, 15, 18, 24], 0);
+      giftArea.innerHTML = `
+        <label class="check-card"><input type="checkbox" name="giftsCheck" value="Ngăn kéo AT-335" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/a-nh-3.png?v=1749172930020" onchange="handleGiftSelection()"><span class="checkmark"></span> Két JJ-335</label>
+        <label class="check-card"><input type="checkbox" name="giftsCheck" value="Máy in hóa đơn SPR02" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/spr02-den.png" onchange="handleGiftSelection()"><span class="checkmark"></span> In hóa đơn SPR02</label>
+        <label class="check-card"><input type="checkbox" name="giftsCheck" value="Thiết bị hiển thị QR03" data-type="normal" data-img="https://bizweb.dktcdn.net/100/091/193/products/qr03-2.png?v=1750132986703" onchange="handleGiftSelection()"><span class="checkmark"></span> Màn hình QR03</label>
+      `;
+    }
+
+    if (!isCombo && yrs === 12) {
       hasPromo = true;
       secInitFee.style.display = 'block';
     }
@@ -1180,6 +1194,9 @@
     const yrs = parseInt(yearsEl.value);
 
     const promoCard = document.getElementById('compPromoCard');
+    const isCombo = packageEl.getAttribute('data-iscombo') === '1';
+    const secYears = document.getElementById('comp_secYears');
+    if (secYears) secYears.style.display = isCombo ? 'none' : 'block';
     const bonusArea = document.getElementById('comp_bonusArea');
     const giftArea = document.getElementById('comp_giftArea');
     const secInitFee = document.getElementById('comp_secInitFee');
@@ -1214,7 +1231,18 @@
 
     let hasPromo = false;
 
-    if (yrs === 12) {
+    if (isCombo) {
+      hasPromo = true; comp_giftQuota = 1;
+      secDiscount.style.display = 'block'; secBonus.style.display = 'block'; secGift.style.display = 'block';
+      bonusArea.innerHTML = buildBonusHTML([0, 6, 12, 15, 18, 24], 0);
+      giftArea.innerHTML = `
+        <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Ngăn kéo AT-335" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/a-nh-3.png?v=1749172930020" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> Két JJ-335</label>
+        <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Máy in hóa đơn SPR02" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/spr02-den.png" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> In hóa đơn SPR02</label>
+        <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Thiết bị hiển thị QR03" data-type="normal" data-img="https://bizweb.dktcdn.net/100/091/193/products/qr03-2.png?v=1750132986703" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> Màn hình QR03</label>
+      `;
+    }
+
+    if (!isCombo && yrs === 12) {
       hasPromo = true;
       secInitFee.style.display = 'block';
     }
