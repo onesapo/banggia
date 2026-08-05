@@ -214,10 +214,10 @@
           <option value="Số 06, Đường số 4, Khu dự án Phú Xuân City, Phường An Cựu, Thành phố Huế" data-city="Thừa Thiên Huế">Huế - Khu dự án Phú Xuân City</option>
         </optgroup>
         <optgroup label="📍 Khu vực Miền Nam">
-          <option value="Tầng 5, Tòa nhà Lữ Gia, Số 70 Lữ Gia , Phường Phú Thọ, TP. HCM" data-city="TP. Hồ Chí Minh">TP. HCM - Tòa nhà Lữ Gia</option>
+          <option value="Tầng 5, Tòa nhà Lữ Gia, Số 70 Lữ Gia , Phường Phú Thọ, TP. HCM" data-city="TP. Hồ Chí Minh" selected>TP. HCM - Tòa nhà Lữ Gia</option>
           <option value="101 Đường số 5, KDC Hiệp Thành 3, Phường Thủ Dầu Một, TP. HCM" data-city="TP. Hồ Chí Minh">TP. HCM - 101 Đường số 5 (KDC Hiệp Thành)</option>
           <option value="25 QL50 khu phố 2, phường Mỹ Phong, Đồng Tháp" data-city="Đồng Tháp">Đồng Tháp - 25 QL50</option>
-          <option value="16 Lê Văn Tám, Phường Long Châu, tỉnh Vĩnh Long" data-city="Vĩnh Long" selected>Vĩnh Long - 16 Lê Văn Tám</option>
+          <option value="16 Lê Văn Tám, Phường Long Châu, tỉnh Vĩnh Long" data-city="Vĩnh Long">Vĩnh Long - 16 Lê Văn Tám</option>
           <option value="A7-50, đường số 12, KĐT lấn biển Tây Bắc, Rạch Giá, An Giang" data-city="An Giang">An Giang - Tây Bắc Rạch Giá</option>
           <option value="Đường Đoàn Thị Điểm, Tổ 10A KP 12 Dương Đông, Phú Quốc" data-city="Phú Quốc">An Giang - Phú Quốc</option>
           <option value="76 Mậu Thân, Phường Cái Khế, Thành phố Cần Thơ" data-city="Cần Thơ">Cần Thơ - 76 Mậu Thân</option>
@@ -502,8 +502,8 @@
   <button class="btn-submit" onclick="buildQuote()">TÍNH TIỀN & XUẤT BÁO GIÁ</button>
 
   <div class="footer-credits">
-    ⚡ Developed & Optimized by <span class="team">Team Sapo</span><br>
-    <i>"Đẳng cấp chốt Deal - Bứt tốc doanh thu"</i>
+    ⚡ Developed & Optimized by <span class="team">Cuonglc</span><br>
+    <i>"Gọi là có khách - Gặp là thu tiền"</i>
   </div>
 
   <div class="quote-wrapper" id="quoteWrapper">
@@ -574,7 +574,8 @@
   const MASTER_DATA = {
     "FNB": [
       { name: "Sapo FnB Startup", price: 170000 },
-      { name: "Sapo FnB Pro", price: 249000 }
+      { name: "Sapo FnB Pro", price: 249000 },
+      { name: "FNB COMBO", price: 299000, isCombo: true, comboTotal: 7176000, comboMonths: 24, label: "Trọn gói 24 tháng" }
     ],
     "RETAIL": [
       { name: "Sapo Retail Startup", price: 170000 },
@@ -810,14 +811,18 @@
     packages.forEach((pkg, index) => {
       const isChecked = index === 0 ? 'checked' : '';
       const isActive = index === 0 ? 'active' : '';
+      const badge = pkg.isCombo ? ` <span style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;vertical-align:middle;letter-spacing:.5px;">HOT</span>` : '';
+      const priceLabel = pkg.isCombo
+        ? `<span style="font-size:11px;color:#dc2626;font-weight:700;">${new Intl.NumberFormat('vi-VN').format(pkg.comboTotal)}đ trọn gói</span> <span style="font-size:10px;color:#64748b;">· ${pkg.label}</span>`
+        : `<span style="font-size:12px; color:var(--primary);">${new Intl.NumberFormat('vi-VN').format(pkg.price)}đ/tháng</span>`;
       html += `
-        <label class="radio-card ${isActive}">
+        <label class="radio-card ${isActive}" style="${pkg.isCombo ? 'border-color:#f59e0b;background:#fffbeb;' : ''}">
           <input type="radio" name="${inputName}" value="${pkg.price}"
-                 data-name="${pkg.name}" onchange="${changeFn}" ${isChecked}>
+                 data-name="${pkg.name}" data-iscombo="${pkg.isCombo ? '1' : ''}" data-combototal="${pkg.comboTotal || 0}" data-combomonths="${pkg.comboMonths || 0}" onchange="${changeFn}" ${isChecked}>
           <span class="checkmark"></span>
           <div style="display:flex; flex-direction:column;">
-            <span style="font-weight:600;">${pkg.name}</span>
-            <span style="font-size:12px; color:var(--primary);">${new Intl.NumberFormat('vi-VN').format(pkg.price)}đ/tháng</span>
+            <span style="font-weight:600;">${pkg.name}${badge}</span>
+            ${priceLabel}
           </div>
         </label>
       `;
@@ -1504,6 +1509,7 @@
       let defaultImg = "https://www.sapo.vn/Themes/Portal/Default/StylesV2/images/logo/Sapo-logo.png?v=202603040413";
       if (group === "FNB" && price === 170000) return { desc: "Giải pháp tính tiền, in hóa đơn nhanh chóng cho quán Cafe, Trà sữa, Nhà hàng vừa và nhỏ.", img: defaultImg };
       if (group === "FNB" && price === 249000) return { desc: "Giải pháp vận hành chuyên nghiệp: Chuẩn hóa định lượng chống thất thoát, Order QR Code thông minh, Quản lý từ xa.", img: defaultImg };
+      if (group === "FNB" && price === 299000) return { desc: "Gói trọn bộ tối ưu chi phí: Sapo FnB Pro trọn gói 24 tháng với ưu đãi đặc biệt + quà tặng thiết bị theo chính sách FNB Pro.", img: defaultImg };
       if (group === "RETAIL" && price === 170000) return { desc: "Quản lý cửa hàng bán lẻ chuyên nghiệp: Tồn kho bằng mã vạch, công nợ, báo cáo doanh thu tự động.", img: defaultImg };
       if (group === "RETAIL" && price === 249000) return { desc: "Bán hàng đa kênh OmniAI: Đồng bộ Facebook, Shopee, TikTok Shop, Lazada & Quản lý nhiều kho hàng.", img: defaultImg };
       if (group === "WEB") return { desc: "Thiết kế Website chuẩn SEO, tích hợp cổng thanh toán, vận chuyển tự động.", img: defaultImg };
@@ -1637,7 +1643,9 @@
       if(!pkgInput) return alert("Vui lòng chọn Gói Phần Mềm!");
       let name = pkgInput.getAttribute('data-name');
       let price = parseInt(pkgInput.value);
-      let months = parseInt(document.querySelector('input[name="years"]:checked').value);
+      let isCombo = pkgInput.getAttribute('data-iscombo') === '1';
+      let comboTotal = isCombo ? parseInt(pkgInput.getAttribute('data-combototal')) : 0;
+      let months = isCombo ? (parseInt(pkgInput.getAttribute('data-combomonths')) || 24) : parseInt(document.querySelector('input[name="years"]:checked').value);
 
       docTitle.innerText = "BẢNG GIÁ DỊCH VỤ SAPO " + group;
       tblHeader.innerHTML = `<tr><th width="35%">SẢN PHẨM / DỊCH VỤ</th><th width="15%">ĐƠN GIÁ</th><th width="10%">S.LƯỢNG</th><th width="15%">HÌNH ẢNH</th><th width="25%">THÀNH TIỀN</th></tr>`;
@@ -1660,7 +1668,7 @@
       let bonusEl = document.querySelector('input[name="bonusMonths"]:checked');
       let systemBonusMonths = (bonusEl && document.getElementById('secBonus').style.display !== 'none') ? parseInt(bonusEl.value) : 0;
 
-      let basePrice = months * price;
+      let basePrice = isCombo ? comboTotal : months * price;
       let giftDiscountValue = 0;
       let extraRefundMonths = 0;
       let giftRowsHTML = "";
@@ -1728,7 +1736,7 @@
           <span style="color:#0f172a; font-size: 12px; font-weight: 600; line-height: 1.5; margin-top: 4px; margin-bottom: 4px; display: inline-block;">- ${pkgInfo.desc}</span><br>
           <span style="color:#475569; font-size: 12px; line-height: 1.6; display: inline-block; margin-top: 5px;">${infoHtml}</span>
         </td>
-        <td class="text-bold">${formatMoney(price)}/tháng</td>
+        <td class="text-bold">${isCombo ? 'Trọn gói' : formatMoney(price)+'/tháng'}</td>
         <td class="text-bold">${months} <span style="font-size: 11px;">tháng</span></td>
         <td><img src="${pkgInfo.img}" class="device-img"></td>
         <td>
@@ -1769,7 +1777,9 @@
 
         let name = pkgInput.getAttribute('data-name');
         let price = parseInt(pkgInput.value);
-        let months = parseInt(document.querySelector(`input[name="${yearField}"]:checked`).value);
+        let isCombo = pkgInput.getAttribute('data-iscombo') === '1';
+        let comboTotal = isCombo ? parseInt(pkgInput.getAttribute('data-combototal')) : 0;
+        let months = isCombo ? (parseInt(pkgInput.getAttribute('data-combomonths')) || 24) : parseInt(document.querySelector(`input[name="${yearField}"]:checked`).value);
 
         let initFeeAmount = 0;
         let isFreeInit = false;
@@ -1813,8 +1823,9 @@
             return { error: true };
         }
 
-        let softTotalAfterSystemDisc = (months * price - giftDisc) * ((100 - totalDisc) / 100);
-        let softTotal = group === "WEB" ? softTotalAfterSystemDisc * ((100 - extraDiscPercent) / 100) : (months * price - giftDisc) * ((100 - (totalDisc + extraDiscPercent)) / 100);
+        let base = isCombo ? comboTotal : months * price;
+        let softTotalAfterSystemDisc = (base - giftDisc) * ((100 - totalDisc) / 100);
+        let softTotal = group === "WEB" ? softTotalAfterSystemDisc * ((100 - extraDiscPercent) / 100) : (base - giftDisc) * ((100 - (totalDisc + extraDiscPercent)) / 100);
 
         softTotal += initFeeAmount; // Cộng phí khởi tạo vào gói so sánh
 
