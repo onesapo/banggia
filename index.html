@@ -419,7 +419,7 @@
       </div>
       <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">Lựa chọn 1</div>
       <div class="input-row" style="align-items:center;">
-        <div style="flex:2.5;"><select id="siInvoicePkg" onchange="calculateTotal()"></select></div>
+        <div style="flex:2.5;"><select id="siInvoicePkg" onchange="syncItemQty('siInvoicePkg','siInvoiceQty'); calculateTotal()"></select></div>
         <div style="flex:0 0 auto;" class="qty-control">
           <button type="button" class="qty-btn" onclick="updateQtyGeneric('siInvoiceQty',-1,event)">-</button>
           <input type="text" id="siInvoiceQty" class="qty-input" value="0" readonly>
@@ -433,7 +433,7 @@
       <div id="siInvCompareBlock" style="display:none; margin-top:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:6px;">Lựa chọn 2 (so sánh)</div>
         <div class="input-row" style="align-items:center;">
-          <div style="flex:2.5;"><select id="siInvoicePkg2" onchange="calculateTotal()"></select></div>
+          <div style="flex:2.5;"><select id="siInvoicePkg2" onchange="syncItemQty('siInvoicePkg2','siInvoiceQty2'); calculateTotal()"></select></div>
           <div style="flex:0 0 auto;" class="qty-control">
             <button type="button" class="qty-btn" onclick="updateQtyGeneric('siInvoiceQty2',-1,event)">-</button>
             <input type="text" id="siInvoiceQty2" class="qty-input" value="0" readonly>
@@ -452,7 +452,7 @@
       <label class="field-label">🔐 Chữ ký số (CKS)</label>
       <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:6px;">Lựa chọn 1</div>
       <div class="input-row" style="align-items:center;">
-        <div style="flex:2.5;"><select id="cksService" onchange="renderCksTerms(); calculateTotal();"></select></div>
+        <div style="flex:2.5;"><select id="cksService" onchange="renderCksTerms(); syncItemQty('cksService','cksQty'); calculateTotal();"></select></div>
         <div style="flex:1.3;"><select id="cksTerm" onchange="calculateTotal()"></select></div>
         <div style="flex:0 0 auto;" class="qty-control">
           <button type="button" class="qty-btn" onclick="updateQtyGeneric('cksQty',-1,event)">-</button>
@@ -467,7 +467,7 @@
       <div id="cksCompareBlock" style="display:none; margin-top:10px;">
         <div style="font-size:12px;font-weight:700;color:var(--warning);margin-bottom:6px;">Lựa chọn 2 (so sánh)</div>
         <div class="input-row" style="align-items:center;">
-          <div style="flex:2.5;"><select id="cksService2" onchange="renderCksTerms2(); calculateTotal();"></select></div>
+          <div style="flex:2.5;"><select id="cksService2" onchange="renderCksTerms2(); syncItemQty('cksService2','cksQty2'); calculateTotal();"></select></div>
           <div style="flex:1.3;"><select id="cksTerm2" onchange="calculateTotal()"></select></div>
           <div style="flex:0 0 auto;" class="qty-control">
             <button type="button" class="qty-btn" onclick="updateQtyGeneric('cksQty2',-1,event)">-</button>
@@ -1409,7 +1409,7 @@
     if (localStorage.getItem('sapoSaleEmail')) document.getElementById('saleEmail').value = localStorage.getItem('sapoSaleEmail');
   }
 
-  function nfmt(n){ return new Intl.NumberFormat('vi-VN').format(n); }
+  function nfmt(n){ return new Intl.NumberFormat('vi-VN').format(n); } function syncItemQty(pkgId, qtyId){ var sel=document.getElementById(pkgId), q=document.getElementById(qtyId); if(!sel||!q) return; if(sel.value===''||sel.value==null){ q.value='0'; } else if((parseInt(q.value)||0)<=0){ q.value='1'; } }
 
   function updateQtyGeneric(inputId, delta, event){
     if(event) event.preventDefault();
