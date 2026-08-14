@@ -246,7 +246,7 @@
 
     <div class="form-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border-light);">
       <label class="field-label">Tên khách hàng (Áp dụng cho Tiêu đề & Lời chào)</label>
-      <input type="text" id="customerName" placeholder="VD: Công ty TNHH ABC, Anh Tuấn...">
+      <input type="text" id="customerName" placeholder="VD: Công ty TNHH ABC, Anh Tuấn..."><label class="field-label" style="margin-top: 15px;">Số ngày hiệu lực báo giá</label><input type="number" id="quoteValidDays" value="7" min="1" style="max-width: 140px;">
     </div>
 
     <input type="radio" name="customerType" value="HKD" checked style="display:none;">
@@ -1930,7 +1930,7 @@
         <b style="color: var(--primary);">Ghi chú:</b><br>
         <span style="color: #475569; font-size: 13px;">
         - Sản phẩm phần mềm không chịu thuế VAT.<br>
-        - Báo giá có giá trị trong vòng 07 ngày kể từ ngày xuất.
+        - Báo giá có giá trị trong vòng ${String(document.getElementById('quoteValidDays')?.value || 7).padStart(2,'0')} ngày kể từ ngày xuất.
         </span>
       </div>
       <div style="font-weight: 700; color: var(--primary); margin-bottom: 8px;">Mọi chi tiết xin liên hệ!</div>
