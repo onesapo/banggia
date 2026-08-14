@@ -161,6 +161,16 @@
       display: none;
     }
     .feature-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .ft-table{width:100%;border-collapse:collapse;font-size:10.5px;line-height:1.3;margin-bottom:5px;}
+    .ft-table th{background:var(--primary);color:#fff;padding:4px 7px;font-size:10.5px;text-align:center;border:1px solid #cbd5e1;}
+    .ft-table th:first-child{text-align:left;}
+    .ft-table td{border:1px solid #e2e8f0;padding:3px 8px;vertical-align:top;text-align:left;}
+    .ft-cat td{background:#0B2A4A;color:#fff;font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;padding:3px 8px;text-align:center;}
+    .ft-c{text-align:center;vertical-align:middle;width:16%;}
+    .ft-b{color:#64748b;font-size:9px;line-height:1.28;margin-top:1px;}
+    .ft-val{color:#1768E0;font-weight:700;}
+    .ft-pkg{margin-bottom:7px;}
+    .ft-pkgttl{background:#eff6ff;color:var(--primary);font-weight:800;font-size:13px;padding:5px 9px;border-radius:4px;margin-bottom:3px;}
     .feature-table th, .feature-table td { border: 1px solid #cbd5e1; padding: 12px 15px; text-align: left; vertical-align: middle; font-size: 13px; line-height: 1.6; }
     .feature-table th { background-color: var(--primary); color: white; font-weight: 600; text-transform: uppercase; text-align: center;}
 
@@ -172,7 +182,7 @@
       .main-container { max-width: 100%; margin: 0; }
       .quote-wrapper { display: block !important; margin: 0; }
       .a4-paper { box-shadow: none; margin: 0; width: 100%; max-width: 100%; padding: 15mm; border-radius: 0; }
-      .feature-page { box-shadow: none; margin: 0; width: 100%; max-width: 100%; padding: 15mm; border-radius: 0; }
+      .feature-page { box-shadow: none; margin: 0; width: 100%; max-width: 100%; padding: 8mm; border-radius: 0; }
       table { page-break-inside: auto; }
       tr { page-break-inside: avoid; page-break-after: auto; }
     }
@@ -239,13 +249,7 @@
       <input type="text" id="customerName" placeholder="VD: Công ty TNHH ABC, Anh Tuấn...">
     </div>
 
-    <div class="form-group" style="margin-top: 15px;">
-      <label class="field-label">Phân loại hình kinh doanh <span style="color:red">*</span></label>
-      <div class="option-grid">
-        <label class="radio-card active"><input type="radio" name="customerType" value="HKD" onchange="validateComboServices()" checked><span class="checkmark"></span> Hộ kinh doanh (HKD)</label>
-        <label class="radio-card"><input type="radio" name="customerType" value="DN" onchange="validateComboServices()"><span class="checkmark"></span> Doanh nghiệp (Cty)</label>
-      </div>
-    </div>
+    <input type="radio" name="customerType" value="HKD" checked style="display:none;">
   </div>
 
   <div class="card">
@@ -555,15 +559,7 @@
       <div class="quote-header">
         <div class="quote-title-doc" style="margin-bottom: 20px;">PHỤ LỤC: CHI TIẾT TÍNH NĂNG PHẦN MỀM</div>
       </div>
-      <table class="feature-table">
-        <thead>
-          <tr>
-            <th width="10%">STT</th>
-            <th width="90%">MÔ TẢ TÍNH NĂNG NỔI BẬT</th>
-          </tr>
-        </thead>
-        <tbody id="featureTableBody"></tbody>
-      </table>
+      <div id="featureContent"></div>
     </div>
 
   </div>
@@ -655,6 +651,11 @@
     ]
   };
   const INVOICE_LABELS = { hkd:'HĐĐT – HKD', congty:'HĐĐT – Công ty', mtthkd:'HĐ MTT – HKD', mttcongty:'HĐ MTT – Công ty' };
+
+  // ===== Bộ tính năng chi tiết (sinh từ Excel đã duyệt) =====
+  const LINE_FEATURES={"FNB": {"pk": ["Start Up (170k)", "Pro (249k)"], "cats": [{"c": "MÔ HÌNH BÁN HÀNG", "rows": [{"t": "Phục vụ tại chỗ", "b": [], "v": ["✓", "✓"]}, {"t": "Bán hàng mang đi (take away)", "b": [], "v": ["✓", "✓"]}, {"t": "Web đặt hàng online", "b": [], "v": ["✓", "✓"]}, {"t": "Bán hàng trên app (GrabFood, ShopeeFood, GreenFood)", "b": [], "v": ["✓", "✓"]}]}, {"c": "VẬN HÀNH BÁN HÀNG", "rows": [{"t": "Quản lý đặt chỗ", "b": ["Theo dõi được tình trạng bàn còn trống để sắp xếp chỗ ngồi và đưa ra gợi ý phù hợp cho khách hàng", "Quản lý số lượng bàn của từng khu vực"], "v": ["✓", "✓"]}, {"t": "Order bằng điện thoại/tablet", "b": ["Nhân viên lên order cho khách hàng tại bàn bằng điện thoại/tablet", "Order được tự động chuyển xuống bếp/bar, hóa đơn được chuyển đến quầy thu ngân"], "v": ["✓", "✓"]}, {"t": "QR order tại bàn", "b": ["Khách hàng tự order trên menu điện tử bằng QR Code tại bàn", "Order được tự động chuyển xuống bếp/bar, hóa đơn được chuyển đến quầy thu ngân"], "v": ["—", "✓"]}, {"t": "Gửi yêu cầu chế biến cho bar/bếp", "b": ["Nhận đơn trực tiếp từ nhân viên order trên phần mềm ngay khi đơn order hoàn tất", "Dễ dàng chuyển đồ uống ra quầy bar và đồ ăn xuống bếp để nhân viên bar/bếp chế biến", "Quản lý món đã chế biến/món chưa chế biến"], "v": ["✓", "✓"]}, {"t": "Tính tiền, in hóa đơn", "b": ["Tính tiền theo order, theo giờ (karaoke, nhà nghỉ/khách sạn, bi-a)", "Tìm địa chỉ IP và kết nối máy in tự động", "In và quản lý đồng bộ hóa đơn từ tất cả các kênh: cửa hàng, website order, GrabFood, ShopeeFood ngay tại phần mềm"], "v": ["✓", "✓"]}, {"t": "Hóa đơn điện tử", "b": ["Phát hành hóa đơn điện tử trên app bán hàng", "Phát hành hóa đơn điện tử hàng loạt"], "v": ["✓", "✓"]}, {"t": "Thanh toán không tiền mặt", "b": ["Thanh toán qua QR code với VNPay và VietQR (Techcombank, MBBank, OCB)", "Thanh toán qua máy quẹt thẻ (mPOS)", "Tích hợp nhiều cổng thanh toán: VNPay, ZaloPay, KBank,...", "Hỗ trợ thanh toán các thẻ nội địa, thẻ quốc tế Visa/Mastercard"], "v": ["✓", "✓"]}, {"t": "Thiết bị hiển thị mã QR & loa đọc thông báo chuyển khoản", "b": [], "v": ["✓", "✓"]}, {"t": "Liên kết vận chuyển", "b": ["Lên đơn, gọi ship ngay trên phần mềm dù khách đặt hàng ở bất kỳ đâu (Facebook, Zalo, hotline,...)", "Giao hàng trong 30 phút với Grab Express, Ahamove"], "v": ["✓", "✓"]}, {"t": "Chấm công nhân viên", "b": ["Quản lý thời gian làm việc của từng nhân viên để đánh giá và tính lương", "Xác định vị trí chấm công của nhân viên bằng định vị GPS nhằm hạn chế sai sót, gian lận"], "v": ["—", "✓"]}, {"t": "Quản lý nhân viên theo ca", "b": ["Phân quyền nhân viên chi tiết theo từng vai trò: phục vụ, thu ngân, nhân viên bếp/bar, quản lý nhà hàng", "Quản lý năng suất làm việc, biết được doanh thu, số hóa đơn tạo ra của từng nhân viên"], "v": ["✓", "✓"]}]}, {"c": "QUẢN LÝ BÁN HÀNG", "rows": [{"t": "Quản lý tồn kho nguyên vật liệu", "b": ["Định lượng chi tiết cho từng món ăn và kiểm soát nguyên liệu đã bán ra mỗi ngày", "Tự động trừ kho trên phần mềm sau mỗi đơn hàng hoàn tất, không cần điều chỉnh thủ công"], "v": ["Chỉ QL số lượng", "QL tồn kho + giá cost NVL"]}, {"t": "Quản lý thực đơn", "b": ["Thêm mới/điều chỉnh thực đơn, món ăn và danh mục sản phẩm linh hoạt theo nhu cầu bán", "Quản lý giá và số lượng để chủ động trong việc gọi món của khách hàng"], "v": ["✓", "✓"]}, {"t": "Quản lý khách hàng", "b": ["Quản lý thông tin khách hàng chi tiết", "Phân nhóm khách hàng tự động", "Quản lý hạng thẻ và tích điểm thành viên"], "v": ["✓", "✓"]}, {"t": "Quản lý chương trình khuyến mãi", "b": ["Tạo nhanh chương trình khuyến mãi: theo phần trăm, theo số tiền, đồng giá, tặng món", "Thiết lập và điều chỉnh chiến dịch phù hợp với từng mục tiêu: thời gian, mặt hàng, nhóm khách hàng,..."], "v": ["✓", "✓"]}, {"t": "Quản lý thu, chi", "b": ["Quản lý chi tiết phiếu thu, chi trên phần mềm", "Đảm bảo đánh giá chính xác nguồn tiền ra vào trong kỳ", "Lưu giữ hóa đơn, chứng từ online"], "v": ["✓", "✓"]}, {"t": "Quản lý chuỗi", "b": ["Theo dõi báo cáo doanh thu của từng chi nhánh, cửa hàng", "Quản lý nhân viên, tồn kho"], "v": ["—", "✓"]}, {"t": "Báo cáo bán hàng", "b": ["Theo dõi chi tiết báo cáo doanh thu, lãi lỗ theo thời gian thực, theo hóa đơn, mặt hàng,...", "Báo cáo dạng biểu đồ trực quan, dễ hiểu và dễ đánh giá tổng quát", "So sánh báo cáo doanh thu, mặt hàng, khuyến mại,... ở từng thời điểm"], "v": ["✓", "✓"]}, {"t": "Hỗ trợ đa thiết bị", "b": [], "v": ["ĐT · PC · Máy tính tiền", "ĐT · PC · Máy tính tiền"]}]}]}, "BANLE": {"pk": ["Startup (170k)", "Pro (249k)", "Omni (449k)"], "cats": [{"c": "KÊNH BÁN HÀNG", "rows": [{"t": "Bán tại cửa hàng", "b": [], "v": ["✓", "✓", "✓"]}, {"t": "Bán trên Mạng xã hội (Facebook, Zalo, Zalo OA, Instagram, TikTok for Business)", "b": [], "v": ["1 fanpage", "5 fanpage", "10 fanpage"]}, {"t": "Bán trên sàn TMĐT (Shopee, TikTokShop, Lazada, Tiki)", "b": [], "v": ["1 gian hàng", "5 gian hàng", "10 gian hàng"]}, {"t": "Website bán hàng", "b": [], "v": ["—", "—", "—"]}]}, {"c": "TỰ ĐỘNG HÓA BÁN HÀNG", "rows": [{"t": "Bán và chốt đơn Livestream theo kịch bản", "b": [], "v": ["—", "—", "✓"]}, {"t": "Công cụ hỗ trợ nhà bán hàng TMĐT: Đăng bán đa sàn", "b": [], "v": ["—", "(Mua thêm)", "✓"]}, {"t": "Tự động hóa quy trình nghiệp vụ với workflow automation - Sapo Automate", "b": [], "v": ["—", "(Mua thêm)", "✓"]}, {"t": "Bán hàng thông minh với AI", "b": ["Viết mô tả sản phẩm tự động", "Chatbot AI thông minh trả lời tự động theo tình huống", "Phản hồi & tổng hợp đánh giá tự động (Shopee)"], "v": ["100 điểm AI/tháng · Dùng 3 tháng · Có thể mua thêm", "100 điểm AI/tháng · Dùng 3 tháng · Có thể mua thêm", "100 điểm AI/tháng · Dùng 3 tháng · Có thể mua thêm"]}]}, {"c": "QUẢN LÝ BÁN HÀNG", "rows": [{"t": "Quản lý sản phẩm & kho", "b": ["Quản lý chi tiết sản phẩm: mô tả, giá nhập, giá bán, số lượng, mẫu mã,...", "Tự động cập nhật số lượng sản phẩm khi có đơn hàng phát sinh", "Kiểm kho dễ dàng", "Quản lý hệ thống phiếu nhập hàng, xuất kho, chuyển hàng"], "v": ["✓", "✓", "✓"]}, {"t": "Quy trình vận hành đơn", "b": ["Chuẩn hóa quy trình xử lý đơn hàng từ phân loại, xác nhận, in phiếu, quét kiểm đến bàn giao cho đơn vị vận chuyển"], "v": ["Cơ bản", "Cơ bản", "Tiêu chuẩn"]}, {"t": "Quản lý đơn hàng", "b": ["Quản lý chi tiết đơn hàng: trạng thái đơn, vận chuyển, thanh toán; thông tin khách mua, sản phẩm trong đơn,...", "Quản lý & vận hành đơn hàng đa kênh tập trung tại một nơi", "Kiểm tra tình trạng đơn hàng đa kênh", "Tạo đơn và bán hàng khi mất mạng, tự động đồng bộ khi có kết nối Internet"], "v": ["≤ 10.000 đơn/tháng", "≤ 10.000 đơn/tháng", "≤ 20.000 đơn/tháng"]}, {"t": "Quản lý cửa hàng", "b": ["Quản lý nhiều cửa hàng trong cùng một hệ thống quản trị", "Báo cáo doanh thu theo từng cửa hàng", "Báo cáo giao hàng theo từng cửa hàng", "Tạo phiếu chuyển hàng giữa các cửa hàng"], "v": ["1 cửa hàng", "1 cửa hàng", "2 cửa hàng"]}, {"t": "Quản lý nhân viên", "b": ["Thêm và xóa tài khoản nhân viên", "Phân quyền chi tiết cho từng nhân viên", "Báo cáo doanh thu theo nhân viên"], "v": ["3 NV", "Không giới hạn", "Không giới hạn"]}, {"t": "Quản lý khách hàng", "b": ["Quản lý thông tin khách hàng chi tiết: thông tin nhân khẩu học, lịch sử mua hàng,...", "Phân nhóm khách hàng tự động"], "v": ["✓", "✓", "✓"]}, {"t": "Sổ quỹ", "b": ["Quản lý quỹ tiền mặt, tiền gửi, tổng quỹ của cửa hàng", "Tạo và quản lý phiếu thu, phiếu chi, phiếu chuyển tiền nội bộ", "Lọc và xem báo cáo quỹ theo nhu cầu"], "v": ["✓", "✓", "✓"]}, {"t": "Thanh toán không tiền mặt", "b": ["Thanh toán qua QR code với VNPay và VietQR", "Thanh toán qua máy quẹt thẻ (VPBankPOS)", "Tích hợp nhiều cổng thanh toán: VNPay, ZaloPay, Ecopay, VNPT Epay, KBank,...", "Hỗ trợ thanh toán các thẻ nội địa, thẻ quốc tế Visa/Mastercard"], "v": ["✓", "✓", "✓"]}, {"t": "Kết nối vận chuyển", "b": ["Đẩy đơn vận chuyển ngay trên phần mềm và quản lý đồng bộ đơn hàng vận chuyển", "So sánh trực quan phí ship và thường xuyên cập nhật ưu đãi giảm tới 100%", "Theo dõi tình trạng đơn hàng và đối soát vận chuyển chi tiết"], "v": ["✓", "✓", "✓"]}, {"t": "Báo cáo kinh doanh", "b": ["Báo cáo bán hàng: Doanh thu, Lợi nhuận, Thanh toán", "Báo cáo kho: Sổ kho, Tồn kho, Xuất nhập tồn, Kiểm hàng", "Báo cáo khách hàng: theo thời gian, khu vực, số lượt mua hàng", "Báo cáo thanh toán: theo thời gian, loại phương thức, nguồn đơn hàng", "Báo cáo lợi nhuận tổng hợp: theo thời gian, kênh bán"], "v": ["✓", "✓", "✓"]}, {"t": "Báo cáo phân tích website", "b": ["Đo lường tỉ lệ chuyển đổi từng giai đoạn", "Phân tích lượng truy cập website ở từng thời điểm, so sánh tăng giảm", "Thống kê số phiên xem sản phẩm, lọc top sản phẩm có phiên xem cao nhất", "Tỷ lệ khách hàng chỉ vào xem 1 trang trên website và rời đi"], "v": ["—", "—", "—"]}]}, {"c": "CHĂM SÓC KHÁCH HÀNG SAU BÁN", "rows": [{"t": "Tích điểm khách hàng", "b": ["Khách hàng tích điểm thông qua số điện thoại", "Cấu hình thời điểm hết hạn của điểm và cho phép nhập file điều chỉnh điểm", "Loại trừ tích điểm theo: khách hàng, đơn hàng, sản phẩm"], "v": ["Tích điểm đơn kênh", "Tích điểm đa kênh", "Tích điểm đa kênh"]}, {"t": "Chương trình hạng thành viên", "b": ["Cấu hình hạng thành viên theo số tiền chi tiêu", "Chiết khấu giảm giá cho hạng thành viên, thiết lập được số tiền giảm giá tối đa", "Cấu hình hạ hạng thành viên; điều chỉnh hạng thành viên thủ công"], "v": ["✓", "✓", "✓"]}, {"t": "Sử dụng điểm thưởng đa kênh", "b": ["Quy đổi điểm thưởng thành ưu đãi giảm giá"], "v": ["✓", "✓", "✓"]}]}]}, "WEB": {"pk": ["Web Standard (499k)", "Advanced (600k)", "Growth (999k)"], "cats": [{"c": "THÔNG SỐ GÓI", "rows": [{"t": "Website bán hàng", "b": [], "v": ["1", "1", "1"]}, {"t": "Cửa hàng", "b": [], "v": ["—", "2 (thêm 200k/CH)", "5 (thêm 200k/CH)"]}, {"t": "Gian hàng / Fanpage", "b": [], "v": ["—", "15 gian hàng, 15 fanpage", "15 gian hàng, 15 fanpage"]}, {"t": "Nhân viên", "b": [], "v": ["5", "Không giới hạn", "Không giới hạn"]}]}, {"c": "BÁN HÀNG TRÊN WEBSITE", "rows": [{"t": "Nền tảng website", "b": ["Dung lượng 5GB", "Không giới hạn sản phẩm", "Giao diện responsive", "SSL - Chứng chỉ bảo mật miễn phí", "Tối ưu SEO"], "v": ["✓", "✓", "✓"]}, {"t": "Mô tả sản phẩm tự động với AI", "b": [], "v": ["✓", "✓", "✓"]}, {"t": "Quản lý đơn hàng · Tích hợp vận chuyển", "b": [], "v": ["✓", "✓", "✓"]}]}, {"c": "QUẢN LÝ BÁN HÀNG", "rows": [{"t": "Quản lý sản phẩm & kho", "b": ["Quản lý chi tiết sản phẩm: mô tả, giá nhập, giá bán, số lượng, mẫu mã,...", "Tự động cập nhật số lượng sản phẩm khi có đơn hàng phát sinh", "Kiểm kho dễ dàng", "Quản lý hệ thống phiếu nhập hàng, xuất kho, chuyển hàng"], "v": ["✓", "✓", "✓"]}, {"t": "Quy trình vận hành đơn", "b": ["Chuẩn hóa quy trình xử lý đơn hàng từ phân loại, xác nhận, in phiếu, quét kiểm đến bàn giao cho đơn vị vận chuyển"], "v": ["Cơ bản", "Tiêu chuẩn", "Tiêu chuẩn"]}, {"t": "Quản lý đơn hàng", "b": ["Quản lý chi tiết đơn hàng: trạng thái đơn, vận chuyển, thanh toán, thông tin khách mua, sản phẩm,...", "Quản lý & vận hành đơn hàng đa kênh tập trung tại một nơi", "Kiểm tra tình trạng đơn hàng đa kênh", "Tạo đơn và bán hàng khi mất mạng, tự động đồng bộ khi có Internet"], "v": ["Đơn từ website", "Đơn đa kênh", "Đơn đa kênh"]}, {"t": "Quản lý cửa hàng", "b": ["Quản lý nhiều cửa hàng trong cùng một hệ thống quản trị", "Báo cáo doanh thu theo từng cửa hàng", "Báo cáo giao hàng theo từng cửa hàng", "Tạo phiếu chuyển hàng giữa các cửa hàng"], "v": ["—", "2 cửa hàng", "5 cửa hàng"]}, {"t": "Quản lý nhân viên", "b": ["Thêm và xóa tài khoản nhân viên", "Phân quyền chi tiết cho từng nhân viên", "Báo cáo doanh thu theo nhân viên"], "v": ["5 NV", "Không giới hạn", "Không giới hạn"]}, {"t": "Quản lý khách hàng", "b": ["Quản lý thông tin khách hàng chi tiết: nhân khẩu học, lịch sử mua hàng,...", "Phân nhóm khách hàng tự động"], "v": ["✓", "✓", "✓"]}, {"t": "Sổ quỹ", "b": ["Quản lý quỹ tiền mặt, tiền gửi, tổng quỹ của cửa hàng", "Tạo và quản lý phiếu thu, phiếu chi, phiếu chuyển tiền nội bộ", "Lọc và xem báo cáo quỹ theo nhu cầu"], "v": ["✓", "✓", "✓"]}, {"t": "Thanh toán không tiền mặt", "b": ["Thanh toán qua QR code với VNPay và VietQR", "Thanh toán qua máy quẹt thẻ (VPBankPOS)", "Tích hợp nhiều cổng: VNPay, ZaloPay, Ecopay, VNPT Epay, KBank,...", "Hỗ trợ thẻ nội địa, thẻ quốc tế Visa/Mastercard"], "v": ["✓", "✓", "✓"]}, {"t": "Kết nối vận chuyển", "b": ["Đẩy đơn vận chuyển ngay trên phần mềm và quản lý đồng bộ", "So sánh trực quan phí ship, cập nhật ưu đãi giảm tới 100%", "Theo dõi tình trạng đơn hàng và đối soát vận chuyển chi tiết"], "v": ["✓", "✓", "✓"]}, {"t": "Báo cáo kinh doanh", "b": ["Báo cáo bán hàng: Doanh thu, Lợi nhuận, Thanh toán", "Báo cáo kho: Sổ kho, Tồn kho, Xuất nhập tồn, Kiểm hàng", "Báo cáo khách hàng: theo thời gian, khu vực, số lượt mua", "Báo cáo thanh toán: theo thời gian, phương thức, nguồn đơn", "Báo cáo lợi nhuận tổng hợp: theo thời gian, kênh bán"], "v": ["✓", "✓", "✓"]}, {"t": "Báo cáo phân tích website", "b": ["Đo lường tỉ lệ chuyển đổi từng giai đoạn", "Phân tích lượng truy cập website từng thời điểm, so sánh tăng giảm", "Thống kê số phiên xem sản phẩm, lọc top sản phẩm xem nhiều nhất", "Tỷ lệ khách chỉ vào xem 1 trang rồi rời đi"], "v": ["✓", "✓", "✓"]}]}, {"c": "CHĂM SÓC KHÁCH HÀNG SAU BÁN", "rows": [{"t": "Tích điểm khách hàng", "b": ["Khách hàng tích điểm thông qua số điện thoại", "Cấu hình thời điểm hết hạn của điểm và cho phép nhập file điều chỉnh", "Loại trừ tích điểm theo: khách hàng, đơn hàng, sản phẩm"], "v": ["Tích điểm kênh website", "Tích điểm đa kênh", "Tích điểm đa kênh"]}, {"t": "Chương trình hạng thành viên", "b": ["Cấu hình hạng thành viên theo số tiền chi tiêu", "Chiết khấu giảm giá cho hạng thành viên, thiết lập số tiền giảm tối đa", "Cấu hình hạ hạng thành viên; điều chỉnh hạng thủ công"], "v": ["✓", "✓", "✓"]}, {"t": "Sử dụng điểm thưởng", "b": ["Quy đổi điểm thưởng thành ưu đãi giảm giá"], "v": ["Trên website", "Đa kênh", "Đa kênh"]}]}]}};
+  const PKG_MAP={"FNB_170000":["FNB",0],"FNB_249000":["FNB",1],"FNB_299000":["FNB",1],"RETAIL_170000":["BANLE",0],"RETAIL_249000":["BANLE",1],"WEB_499000":["WEB",0],"OMNI_600000":["BANLE",2],"OMNI_999000":["BANLE",2]};
+  
 
   // === Bảng giá Chữ ký số (áp dụng 03/2026, đã gồm VAT) ===
   const CKS_SERVICES = [
@@ -1088,7 +1089,7 @@
     let hasPromo = false;
 
     if (isCombo) {
-      hasPromo = true; giftQuota = 1;
+      hasPromo = true; giftQuota = 2;
       secDiscount.style.display = 'block'; secBonus.style.display = 'block'; secGift.style.display = 'block';
       bonusArea.innerHTML = buildBonusHTML([0, 6, 12, 15, 18, 24], 0);
       giftArea.innerHTML = `
@@ -1232,7 +1233,7 @@
     let hasPromo = false;
 
     if (isCombo) {
-      hasPromo = true; comp_giftQuota = 1;
+      hasPromo = true; comp_giftQuota = 2;
       secDiscount.style.display = 'block'; secBonus.style.display = 'block'; secGift.style.display = 'block';
       bonusArea.innerHTML = buildBonusHTML([0, 6, 12, 15, 18, 24], 0);
       giftArea.innerHTML = `
@@ -1409,7 +1410,15 @@
     if (localStorage.getItem('sapoSaleEmail')) document.getElementById('saleEmail').value = localStorage.getItem('sapoSaleEmail');
   }
 
-  function nfmt(n){ return new Intl.NumberFormat('vi-VN').format(n); } function syncItemQty(pkgId, qtyId){ var sel=document.getElementById(pkgId), q=document.getElementById(qtyId); if(!sel||!q) return; if(sel.value===''||sel.value==null){ q.value='0'; } else if((parseInt(q.value)||0)<=0){ q.value='1'; } }
+  function nfmt(n){ return new Intl.NumberFormat('vi-VN').format(n); }
+
+  // Khi chọn gói trong dropdown -> tự set số lượng = 1 (bỏ chọn -> 0)
+  function syncItemQty(pkgId, qtyId){
+    var sel=document.getElementById(pkgId), q=document.getElementById(qtyId);
+    if(!sel||!q) return;
+    if(sel.value==='' || sel.value==null){ q.value='0'; }
+    else if((parseInt(q.value)||0)<=0){ q.value='1'; }
+  }
 
   function updateQtyGeneric(inputId, delta, event){
     if(event) event.preventDefault();
@@ -1938,25 +1947,59 @@
     let featureTableBody = document.getElementById('featureTableBody');
 
     if (formatMode === "detailed") {
-        let groupField = document.querySelector('input[name="mainGroup"]:checked');
-        let currentGroup = groupField ? groupField.value : "FNB";
-
-        let pkgInput = document.querySelector('input[name="package"]:checked');
-        let price = pkgInput ? parseInt(pkgInput.value) : 170000;
-
-        let featureKey = currentGroup + "_" + price;
-        let features = FEATURE_DATA[featureKey] || FEATURE_DATA[currentGroup + "_170000"] || [];
-
-        let fHtml = "";
-        features.forEach((f, index) => {
-            let parts = f.split(': ');
-            if(parts.length > 1) {
-                fHtml += `<tr><td style="text-align: center; font-weight: bold; color: var(--primary);">${index + 1}</td><td><b style="color: #0f172a;">${parts[0]}:</b> ${parts.slice(1).join(': ')}</td></tr>`;
-            } else {
-                fHtml += `<tr><td style="text-align: center; font-weight: bold; color: var(--primary);">${index + 1}</td><td>${f}</td></tr>`;
-            }
-        });
-        featureTableBody.innerHTML = fHtml;
+        function ftResolve(pkgInput, groupInput){
+            if(!pkgInput || !groupInput) return null;
+            var group = groupInput.value;
+            var price = parseInt(pkgInput.value);
+            var isCombo = pkgInput.getAttribute('data-iscombo') === '1';
+            var key = group + "_" + (isCombo ? 249000 : price);
+            var map = PKG_MAP[key] || PKG_MAP[group + "_" + price];
+            if(!map || !LINE_FEATURES[map[0]]) return null;
+            return { line: LINE_FEATURES[map[0]], idx: map[1], name: pkgInput.getAttribute('data-name'), lineKey: map[0], isCombo: isCombo };
+        }
+        function ftHas(v){ return v && v !== "—" && v !== "-" && String(v).trim() !== ""; }
+        function ftCell(v){ if(v === "✓") return '<span style="color:#16a34a;font-weight:700;">✓</span>'; if(!ftHas(v)) return '<span style="color:#cbd5e1;">—</span>'; return '<b style="color:#0f172a;">'+v+'</b>'; }
+        function ftBul(b){ if(!b || !b.length) return ''; return '<div class="ft-b">' + b.map(function(x){ return '• '+x; }).join('&nbsp; ') + '</div>'; }
+        var ftSel = [];
+        var ftR1 = ftResolve(document.querySelector('input[name="package"]:checked'), document.querySelector('input[name="mainGroup"]:checked'));
+        if(ftR1) ftSel.push(ftR1);
+        if(isCompareMode){
+            var ftR2 = ftResolve(document.querySelector('input[name="comp_package"]:checked'), document.querySelector('input[name="comp_mainGroup"]:checked'));
+            if(ftR2) ftSel.push(ftR2);
+        }
+        if(ftSel.length === 2 && ftSel[0].lineKey === ftSel[1].lineKey && ftSel[0].idx === ftSel[1].idx){ ftSel = [ftSel[0]]; }
+        var ftHtml = '';
+        if(ftSel.length === 2 && ftSel[0].lineKey === ftSel[1].lineKey){
+            var L = ftSel[0].line, i1 = ftSel[0].idx, i2 = ftSel[1].idx;
+            ftHtml += '<table class="ft-table"><thead><tr><th style="width:58%;">TÍNH NĂNG</th><th>'+ftSel[0].name+'</th><th>'+ftSel[1].name+'</th></tr></thead><tbody>';
+            L.cats.forEach(function(cat){
+                var rows = cat.rows.filter(function(rw){ return ftHas(rw.v[i1]) || ftHas(rw.v[i2]); });
+                if(!rows.length) return;
+                ftHtml += '<tr class="ft-cat"><td colspan="3">'+cat.c+'</td></tr>';
+                rows.forEach(function(rw){
+                    ftHtml += '<tr><td><b>'+rw.t+'</b>'+ftBul(rw.b)+'</td><td class="ft-c">'+ftCell(rw.v[i1])+'</td><td class="ft-c">'+ftCell(rw.v[i2])+'</td></tr>';
+                });
+            });
+            ftHtml += '</tbody></table>';
+        } else {
+            ftSel.forEach(function(s){
+                var L = s.line, idx = s.idx;
+                ftHtml += '<div class="ft-pkg"><div class="ft-pkgttl">📦 '+s.name+(s.isCombo?' · Trọn gói 24 tháng':'')+'</div><table class="ft-table"><tbody>';
+                L.cats.forEach(function(cat){
+                    var rows = cat.rows.filter(function(rw){ return ftHas(rw.v[idx]); });
+                    if(!rows.length) return;
+                    ftHtml += '<tr class="ft-cat"><td>'+cat.c+'</td></tr>';
+                    rows.forEach(function(rw){
+                        var v = rw.v[idx];
+                        var vt = (v === "✓") ? '' : ('<span class="ft-val"> — '+v+'</span>');
+                        ftHtml += '<tr><td><b>'+rw.t+'</b>'+vt+ftBul(rw.b)+'</td></tr>';
+                    });
+                });
+                ftHtml += '</tbody></table></div>';
+            });
+        }
+        if(!ftHtml) ftHtml = '<div style="padding:12px;color:#64748b;">Chưa có dữ liệu tính năng cho gói đã chọn.</div>';
+        document.getElementById('featureContent').innerHTML = ftHtml;
         featurePageArea.style.display = 'block';
     } else {
         featurePageArea.style.display = 'none';
