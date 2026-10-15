@@ -1879,7 +1879,9 @@ function updateFormUICompare3() {
         let displayPrice = itemDiscount > 0 ? `<span class="strike-price">${formatMoney(ad.price)}</span><br><span class="text-red">${formatMoney(unitPriceAfterDiscount)}</span>` : `${formatMoney(ad.price)}`;
 
         if (isCompareMode) {
-          if (ad.id.includes("Combo")) sharedAddonsHtml += `<tr><td class="text-left"><span class="text-bold">${ad.name}</span><br><span style="color:#64748b; font-size:12px;">${addonDesc}</span></td><td colspan="${isCompare3Mode ? 3 : 2}" class="text-bold" style="text-align: center; vertical-align: middle;">Số lượng: <span style="color: var(--primary);">x${qty}</span><br><span class="text-red text-bold" style="font-size: 14px;">Thành tiền: ${formatMoney(itemTotal)}</span><div style="font-size: 11px; color: #64748b;">(Áp dụng chung 2 lựa chọn)</div></td></tr>`;
+          let _imgCol = ad.id.includes("Combo") ? '' : `<img src="${ad.img || defaultAddonImg}" style="width:48px;height:48px;object-fit:contain;border:1px solid #e2e8f0;border-radius:6px;padding:2px;background:#fff;flex:0 0 auto;">`;
+          let _descShared = ad.id.includes("Combo") ? addonDesc : `- Thiết bị mua thêm (áp dụng chung)<br>Niêm yết: ${formatMoney(ad.price)}`;
+          sharedAddonsHtml += `<tr><td class="text-left"><div style="display:flex; align-items:center; gap:8px;">${_imgCol}<div><span class="text-bold">${ad.name}</span><br><span style="color:#64748b; font-size:12px;">${_descShared}</span></div></div></td><td colspan="${isCompare3Mode ? 3 : 2}" class="text-bold" style="text-align: center; vertical-align: middle;">Số lượng: <span style="color: var(--primary);">x${qty}</span><br><span class="text-red text-bold" style="font-size: 14px;">Thành tiền: ${formatMoney(itemTotal)}</span><div style="font-size: 11px; color: #64748b;">(Áp dụng chung các gói)</div></td></tr>`;
         } else if (!ad.id.includes("Combo")) {
           deviceBuy.push({name: ad.name, img: ad.img || defaultAddonImg, niemyet: ad.price, unitAfter: unitPriceAfterDiscount, qty: qty, discount: itemDiscount});
         } else {
