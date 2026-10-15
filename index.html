@@ -2320,11 +2320,11 @@ function updateFormUICompare3() {
           cells+='<td class="text-center'+hl+'" style="text-align:center;vertical-align:middle;">'+c+'</td>';
         });
         let niem = niemVal>0 ? '<br><span style="color:#64748b;font-size:11px;">Niêm yết: '+formatMoney(niemVal)+'</span>' : '';
-        let imgTag = rowImg ? '<img src="'+rowImg+'" style="width:42px;height:42px;object-fit:contain;border:1px solid #e2e8f0;border-radius:6px;padding:2px;background:#fff;flex:0 0 auto;">' : '';
-        devRowsHtml += '<tr><td class="text-left"><div style="display:flex;align-items:center;gap:8px;">'+imgTag+'<div><span class="text-bold">'+rowName+'</span>'+niem+'</div></div></td>'+cells+'</tr>';
+        let imgTag = rowImg ? '<img src="'+rowImg+'" style="width:62px;height:62px;object-fit:contain;border:1px solid #e2e8f0;border-radius:8px;padding:3px;background:#fff;">' : '';
+        devRowsHtml += '<tr><td class="text-left" style="vertical-align:middle;"><div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;">'+imgTag+'<div style="line-height:1.35;"><span class="text-bold">'+rowName+'</span>'+niem+'</div></div></td>'+cells+'</tr>';
       });
       if(devRowsHtml){
-        tbody.innerHTML += '<tr><td colspan="'+(DEVPREFIXES.length+1)+'" style="background:#0B2A4A;color:#fff;font-weight:700;text-align:left;padding:8px 10px;">🖥️ THIẾT BỊ PHẦN CỨNG</td></tr>' + devRowsHtml;
+        tbody.innerHTML += '<tr><td colspan="'+(DEVPREFIXES.length+1)+'" style="background:#0B2A4A;color:#fff;font-weight:700;text-align:left;padding:4px 12px;font-size:12px;letter-spacing:.3px;">🖥️ THIẾT BỊ PHẦN CỨNG</td></tr>' + devRowsHtml;
       }
 
       tbody.innerHTML += sharedAddonsHtml;
