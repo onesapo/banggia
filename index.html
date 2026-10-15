@@ -2100,7 +2100,15 @@ function updateFormUICompare3() {
       tbody.innerHTML += sharedAddonsHtml;
 
       let grandTotal = softwareTotal + sharedAddonTotal;
-      tbody.innerHTML += `<tr style="background-color: #f8fafc; border-top: 2px solid var(--primary);"><td colspan="4" class="text-left text-bold" style="font-size: 15px; color: var(--primary);">TỔNG CỘNG CẦN THANH TOÁN:</td><td class="text-red text-bold" style="font-size: 18px;">${formatMoney(grandTotal)}</td></tr>`;
+      // Giá gốc (chưa khuyến mãi) gạch ngang + giá đã giảm
+      let bonusValueS = (systemBonusMonths + extraRefundMonths) * price;
+      let initValueS = (isFreeInit || initFeeAmount > 0) ? 1500000 : 0;
+      let giftValueS = 0; document.querySelectorAll('input[name="giftsCheck"]:checked').forEach(cb => giftValueS += getGiftPrice(cb.value));
+      let devGrossS = 0, devFinalS = 0;
+      deviceBuy.forEach(b => { devGrossS += b.niemyet * b.qty; devFinalS += b.unitAfter * b.qty; });
+      let grossSingle = basePrice + bonusValueS + initValueS + giftValueS + (sharedAddonTotal - devFinalS) + devGrossS;
+      let strikeS = (grossSingle > grandTotal + 1) ? `<span style="text-decoration:line-through; color:#94a3b8; font-size:14px; font-weight:600; display:block;">${formatMoney(grossSingle)}</span>` : '';
+      tbody.innerHTML += `<tr style="background-color: #f8fafc; border-top: 2px solid var(--primary);"><td colspan="4" class="text-left text-bold" style="font-size: 15px; color: var(--primary);">TỔNG CỘNG CẦN THANH TOÁN:</td><td style="vertical-align:middle;">${strikeS}<span class="text-red text-bold" style="font-size: 18px;">${formatMoney(grandTotal)}</span></td></tr>`;
 
     }
     else {
