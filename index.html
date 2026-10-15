@@ -1253,16 +1253,20 @@
       }
     }
     else if (pkgPrice === 170000) {
-      if (service === "FNB" && yrs === 24) { hasPromo = true; secDiscount.style.display = 'block'; }
-      else if (service === "FNB" && yrs === 36) {
-        hasPromo = true; giftQuota = 1; secDiscount.style.display = 'block'; secGift.style.display = 'block';
-        giftArea.innerHTML = `
+      if ((service === "FNB" || service === "RETAIL") && (yrs === 24 || yrs === 36)) {
+        hasPromo = true;
+        secDiscount.style.display = 'block';
+        secBonus.style.display = 'block';
+        bonusArea.innerHTML = buildBonusHTML(yrs === 36 ? [0, 6, 12, 18, 24, 36] : [0, 6, 12, 18, 24], yrs === 36 ? 12 : 6);
+        if (service === "FNB" && yrs === 36) {
+          giftQuota = 1; secGift.style.display = 'block';
+          giftArea.innerHTML = `
           <label class="check-card"><input type="checkbox" name="giftsCheck" value="Ngăn kéo AT-335" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/a-nh-3.png?v=1749172930020" onchange="handleGiftSelection()"><span class="checkmark"></span> Két JJ-335</label>
           <label class="check-card"><input type="checkbox" name="giftsCheck" value="Máy in hóa đơn SPR02" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/spr02-den.png" onchange="handleGiftSelection()"><span class="checkmark"></span> In hóa đơn SPR02</label>
           <label class="check-card"><input type="checkbox" name="giftsCheck" value="Thiết bị hiển thị QR03" data-type="normal" data-img="https://bizweb.dktcdn.net/100/091/193/products/qr03-2.png?v=1750132986703" onchange="handleGiftSelection()"><span class="checkmark"></span> Màn hình QR03</label>
         `;
+        }
       }
-      else if (service === "RETAIL" && (yrs === 24 || yrs === 36)) { hasPromo = true; secDiscount.style.display = 'block'; }
     } else if (service === "WEB") {
       if (yrs === 24) {
         hasPromo = true; secDiscount.style.display = 'block'; secBonus.style.display = 'block';
@@ -1405,16 +1409,20 @@
       }
     }
     else if (pkgPrice === 170000) {
-      if (service === "FNB" && yrs === 24) { hasPromo = true; secDiscount.style.display = 'block'; }
-      else if (service === "FNB" && yrs === 36) {
-        hasPromo = true; comp_giftQuota = 1; secDiscount.style.display = 'block'; secGift.style.display = 'block';
-        giftArea.innerHTML = `
+      if ((service === "FNB" || service === "RETAIL") && (yrs === 24 || yrs === 36)) {
+        hasPromo = true;
+        secDiscount.style.display = 'block';
+        secBonus.style.display = 'block';
+        bonusArea.innerHTML = buildBonusHTML(yrs === 36 ? [0, 6, 12, 18, 24, 36] : [0, 6, 12, 18, 24], yrs === 36 ? 12 : 6);
+        if (service === "FNB" && yrs === 36) {
+          comp_giftQuota = 1; secGift.style.display = 'block';
+          giftArea.innerHTML = `
           <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Ngăn kéo AT-335" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/a-nh-3.png?v=1749172930020" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> Két JJ-335</label>
           <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Máy in hóa đơn SPR02" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/spr02-den.png" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> In hóa đơn SPR02</label>
           <label class="check-card"><input type="checkbox" name="comp_giftsCheck" value="Thiết bị hiển thị QR03" data-type="normal" data-img="https://bizweb.dktcdn.net/100/091/193/products/qr03-2.png?v=1750132986703" onchange="handleGiftSelectionCompare()"><span class="checkmark"></span> Màn hình QR03</label>
         `;
+        }
       }
-      else if (service === "RETAIL" && (yrs === 24 || yrs === 36)) { hasPromo = true; secDiscount.style.display = 'block'; }
     } else if (service === "WEB") {
       if (yrs === 24) {
         hasPromo = true; secDiscount.style.display = 'block'; secBonus.style.display = 'block';
@@ -1557,16 +1565,20 @@ function updateFormUICompare3() {
       }
     }
     else if (pkgPrice === 170000) {
-      if (service === "FNB" && yrs === 24) { hasPromo = true; secDiscount.style.display = 'block'; }
-      else if (service === "FNB" && yrs === 36) {
-        hasPromo = true; comp3_giftQuota = 1; secDiscount.style.display = 'block'; secGift.style.display = 'block';
-        giftArea.innerHTML = `
+      if ((service === "FNB" || service === "RETAIL") && (yrs === 24 || yrs === 36)) {
+        hasPromo = true;
+        secDiscount.style.display = 'block';
+        secBonus.style.display = 'block';
+        bonusArea.innerHTML = buildBonusHTML(yrs === 36 ? [0, 6, 12, 18, 24, 36] : [0, 6, 12, 18, 24], yrs === 36 ? 12 : 6);
+        if (service === "FNB" && yrs === 36) {
+          comp3_giftQuota = 1; secGift.style.display = 'block';
+          giftArea.innerHTML = `
           <label class="check-card"><input type="checkbox" name="comp3_giftsCheck" value="Ngăn kéo AT-335" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/a-nh-3.png?v=1749172930020" onchange="handleGiftSelectionCompare3()"><span class="checkmark"></span> Két JJ-335</label>
           <label class="check-card"><input type="checkbox" name="comp3_giftsCheck" value="Máy in hóa đơn SPR02" data-type="normal" data-img="https://bizweb.dktcdn.net/thumb/grande/100/091/193/products/spr02-den.png" onchange="handleGiftSelectionCompare3()"><span class="checkmark"></span> In hóa đơn SPR02</label>
           <label class="check-card"><input type="checkbox" name="comp3_giftsCheck" value="Thiết bị hiển thị QR03" data-type="normal" data-img="https://bizweb.dktcdn.net/100/091/193/products/qr03-2.png?v=1750132986703" onchange="handleGiftSelectionCompare3()"><span class="checkmark"></span> Màn hình QR03</label>
         `;
+        }
       }
-      else if (service === "RETAIL" && (yrs === 24 || yrs === 36)) { hasPromo = true; secDiscount.style.display = 'block'; }
     } else if (service === "WEB") {
       if (yrs === 24) {
         hasPromo = true; secDiscount.style.display = 'block'; secBonus.style.display = 'block';
