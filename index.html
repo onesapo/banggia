@@ -2306,11 +2306,11 @@ function updateFormUICompare3() {
       ];
       const DEVPREFIXES = isCompare3Mode ? ['','comp_','comp3_'] : ['','comp_'];
       function devStatus(P, row){
+        let gifted=false;
         if(row.giftMatch.length){
-          let gifted=false;
           document.querySelectorAll('input[name="'+P+'giftsCheck"]:checked').forEach(cb=>{ let v=cb.value.toLowerCase(); if(row.giftMatch.some(k=>v.indexOf(k)>=0)) gifted=true; });
-          if(gifted) return {type:'gift', price:row.price};
         }
+        let buy=null;
         if(row.isPos){
           let items=[];
           POS_LIST.forEach(function(m){
@@ -2322,15 +2322,18 @@ function updateFormUICompare3() {
               items.push({short:m.short, unit:m.price, unitAfter:ua, disc:disc, qty:q, price:ua*q, gross:m.price*q, img:m.img});
             }
           });
-          if(items.length){ let price=0,gross=0; items.forEach(function(it){price+=it.price;gross+=it.gross;}); return {type:'buy', items:items, price:price, gross:gross}; }
+          if(items.length){ let price=0,gross=0; items.forEach(function(it){price+=it.price;gross+=it.gross;}); buy={items:items, price:price, gross:gross}; }
         } else {
           let cb=document.getElementById(P+row.buyId);
-          if(cb && cb.checked){ let q=Math.max(1,parseInt((document.getElementById(P+row.qtyId)||{}).value)||1); return {type:'buy', unit:row.price, price:row.price*q, gross:row.price*q, qty:q}; }
+          if(cb && cb.checked){ let q=Math.max(1,parseInt((document.getElementById(P+row.qtyId)||{}).value)||1); buy={unit:row.price, price:row.price*q, gross:row.price*q, qty:q}; }
         }
+        if(gifted && buy) return Object.assign({type:'both', giftPrice:row.price}, buy);
+        if(gifted) return {type:'gift', price:row.price};
+        if(buy) return Object.assign({type:'buy'}, buy);
         return {type:'none'};
       }
-      function devBuyTotal(P){ let t=0; DEVROWS.forEach(r=>{ let st=devStatus(P,r); if(st.type==='buy') t+=st.price; }); return t; }
-      function devGrossTotal(P){ let t=0; DEVROWS.forEach(r=>{ let st=devStatus(P,r); if(st.type==='buy') t+=(st.gross||0); }); return t; }
+      function devBuyTotal(P){ let t=0; DEVROWS.forEach(r=>{ let st=devStatus(P,r); if(st.type==='buy'||st.type==='both') t+=st.price; }); return t; }
+      function devGrossTotal(P){ let t=0; DEVROWS.forEach(r=>{ let st=devStatus(P,r); if(st.type==='buy'||st.type==='both') t+=(st.gross||0); }); return t; }
       let devRowsHtml='';
       DEVROWS.forEach(row=>{
         let sts = DEVPREFIXES.map(P=>devStatus(P,row));
@@ -2343,31 +2346,33 @@ function updateFormUICompare3() {
         let posSingle = false;
         if(row.isPos){
           let allItems = [];
-          sts.forEach(st=>{ if(st.type==='buy' && st.items) st.items.forEach(it=>allItems.push(it)); });
+          sts.forEach(st=>{ if((st.type==='buy'||st.type==='both') && st.items) st.items.forEach(it=>allItems.push(it)); });
           let shorts = [...new Set(allItems.map(it=>it.short))];
           niemVal = 0; rowImg = '';
           if(shorts.length === 1){ posSingle = true; rowName = row.name + ' ' + shorts[0]; rowImg = allItems[0].img; niemVal = allItems[0].unit; }
           else { rowName = row.name; }
         }
+        let giftHtml = (p)=>'<span class="text-green text-bold">✓ Tặng x1</span> <span style="font-size:10px;color:#64748b;">(quà KM)</span><br><span class="strike-price">'+formatMoney(p)+'</span>';
+        let buyHtml = (st)=>{
+          if(row.isPos && st.items){
+            return st.items.map(function(it){
+              let head = posSingle ? ('x'+it.qty) : (it.short+' x'+it.qty);
+              let d = it.disc>0 ? ' <span style="color:#ef4444;font-size:11px;">(-'+it.disc+'%)</span>' : (it.qty>1 ? ' <span style="color:#64748b;font-size:11px;">('+formatMoney(it.unit)+'×'+it.qty+')</span>' : '');
+              return '<div style="margin-bottom:4px;"><span style="color:var(--primary);font-weight:700;">Mua thêm '+head+'</span>'+d+'<br><span class="text-bold">'+formatMoney(it.price)+'</span></div>';
+            }).join('');
+          }
+          let extra = '';
+          if(st.disc>0) extra+='<br><span style="font-size:11px;color:#ef4444;">Giảm '+st.disc+'%</span>';
+          else if(st.qty>1) extra+='<br><span style="font-size:11px;color:#64748b;">'+formatMoney(st.unit)+' × '+st.qty+'</span>';
+          return '<span style="color:var(--primary);font-weight:700;">Mua thêm x'+st.qty+'</span>'+extra+'<br><span class="text-bold">'+formatMoney(st.price)+'</span>';
+        };
         let cells='';
         sts.forEach((st,i)=>{
           let hl = (i===1) ? ' highlight-opt2' : '';
           let c;
-          if(st.type==='gift') c='<span class="text-green text-bold">✓ Tặng x1</span> <span style="font-size:10px;color:#64748b;">(quà KM)</span><br><span class="strike-price">'+formatMoney(st.price)+'</span>';
-          else if(st.type==='buy'){
-            if(row.isPos && st.items){
-              c = st.items.map(function(it){
-                let head = posSingle ? ('x'+it.qty) : (it.short+' x'+it.qty);
-                let d = it.disc>0 ? ' <span style="color:#ef4444;font-size:11px;">(-'+it.disc+'%)</span>' : (it.qty>1 ? ' <span style="color:#64748b;font-size:11px;">('+formatMoney(it.unit)+'×'+it.qty+')</span>' : '');
-                return '<div style="margin-bottom:4px;"><span style="color:var(--primary);font-weight:700;">Mua thêm '+head+'</span>'+d+'<br><span class="text-bold">'+formatMoney(it.price)+'</span></div>';
-              }).join('');
-            } else {
-              let extra = '';
-              if(st.disc>0) extra+='<br><span style="font-size:11px;color:#ef4444;">Giảm '+st.disc+'%</span>';
-              else if(st.qty>1) extra+='<br><span style="font-size:11px;color:#64748b;">'+formatMoney(st.unit)+' × '+st.qty+'</span>';
-              c='<span style="color:var(--primary);font-weight:700;">Mua thêm x'+st.qty+'</span>'+extra+'<br><span class="text-bold">'+formatMoney(st.price)+'</span>';
-            }
-          }
+          if(st.type==='gift') c=giftHtml(st.price);
+          else if(st.type==='buy') c=buyHtml(st);
+          else if(st.type==='both') c='<div style="padding-bottom:5px;">'+giftHtml(st.giftPrice)+'</div><div style="border-top:1px dashed #cbd5e1;padding-top:5px;">'+buyHtml(st)+'</div>';
           else c='<span style="color:#94a3b8;">Không có</span>';
           cells+='<td class="text-center'+hl+'" style="text-align:center;vertical-align:middle;">'+c+'</td>';
         });
